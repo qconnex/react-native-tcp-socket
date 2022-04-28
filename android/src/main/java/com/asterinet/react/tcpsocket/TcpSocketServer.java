@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import android.util.Log;
 
 public final class TcpSocketServer extends TcpSocket {
     private final TcpEventListener mReceiverListener;
@@ -16,6 +17,7 @@ public final class TcpSocketServer extends TcpSocket {
     private final ConcurrentHashMap<Integer, TcpSocket> socketClients;
     private ServerSocket serverSocket;
     private int clientSocketIds;
+    private static final String TAG = "TcpSocketServer";
 
     public TcpSocketServer(final ConcurrentHashMap<Integer, TcpSocket> socketClients, final TcpEventListener receiverListener, final Integer id,
                            final ReadableMap options) throws IOException {
@@ -65,8 +67,12 @@ public final class TcpSocketServer extends TcpSocket {
     }
 
     private void listen() {
-        TcpListenTask tcpListenTask = new TcpListenTask(this, mReceiverListener);
-        listenExecutor.execute(tcpListenTask);
+        try {
+            TcpListenTask tcpListenTask = new TcpListenTask(this, mReceiverListener);
+            listenExecutor.execute(tcpListenTask);
+        } catch (Exception e) {
+            Log.e(TAG, "Some error in listen", e);
+        }
     }
 
     public void close() {
