@@ -459,23 +459,23 @@ export default class Socket extends EventEmitter {
      */
     _registerEvents() {
         this._unregisterEvents();
-        this._dataListener = this._eventEmitter.addListener('data', this._onDeviceDataEvt);
-        this._errorListener = this._eventEmitter.addListener('error', (evt) => {
+        this._dataListener = this._eventEmitter?.addListener('data', this._onDeviceDataEvt);
+        this._errorListener = this._eventEmitter?.addListener('error', (evt) => {
             if (evt.id !== this._id) return;
             this.destroy();
             this.emit('error', evt.error);
         });
-        this._closeListener = this._eventEmitter.addListener('close', (evt) => {
+        this._closeListener = this._eventEmitter?.addListener('close', (evt) => {
             if (evt.id !== this._id) return;
             this._setDisconnected();
             this.emit('close', evt.error);
         });
-        this._connectListener = this._eventEmitter.addListener('connect', (evt) => {
+        this._connectListener = this._eventEmitter?.addListener('connect', (evt) => {
             if (evt.id !== this._id) return;
             this._setConnected(evt.connection);
             this.emit('connect');
         });
-        this._writtenListener = this._eventEmitter.addListener('written', (evt) => {
+        this._writtenListener = this._eventEmitter?.addListener('written', (evt) => {
             if (evt.id !== this._id) return;
             this._msgEvtEmitter.emit('written', evt);
         });
