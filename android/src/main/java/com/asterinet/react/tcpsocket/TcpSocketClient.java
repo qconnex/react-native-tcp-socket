@@ -14,10 +14,13 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import android.util.Log;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
+
+
 
 class TcpSocketClient extends TcpSocket {
     private final ExecutorService listenExecutor;
@@ -25,6 +28,7 @@ class TcpSocketClient extends TcpSocket {
     private final TcpEventListener receiverListener;
     private TcpReceiverTask receiverTask;
     private Socket socket;
+    private static final String TAG = "TcpSocketClient";
 
     TcpSocketClient(TcpEventListener receiverListener, Integer id, Socket socket) {
         super(id);
@@ -78,8 +82,12 @@ class TcpSocketClient extends TcpSocket {
     }
 
     public void startListening() {
-        receiverTask = new TcpReceiverTask(this, receiverListener);
-        listenExecutor.execute(receiverTask);
+        try {
+            receiverTask = new TcpReceiverTask(this, receiverListener);
+            listenExecutor.execute(receiverTask);
+        } catch (Exception e) {
+            Log.e(TAG, "Error running socket listener", e);
+        }
     }
 
     /**
